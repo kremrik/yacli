@@ -25,7 +25,7 @@ parse_args(template, ["--foo", "1", "--bar"])
 
 parse_args(template, ["--foo", "1"])
 ...
-RuntimeError: Argument '--foo' expected
+RuntimeError: Argument '--bar' expected
 ```
 
 There are several other descriptors you can use:
