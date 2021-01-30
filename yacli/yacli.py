@@ -1,6 +1,6 @@
 from yacli.cli_parser import parse_cli_string
 
-from typing import List, Optional
+from typing import Any, Callable, List, Optional, Tuple
 
 
 __all__ = ["parse_args"]
@@ -92,3 +92,104 @@ def _normalize_cli_results(cli_results: dict) -> dict:
         output[k] = value
 
     return output
+
+
+# ---------------------------------------------------------
+
+
+def required(
+    arg: str, from_cli: Any, from_template: Any
+) -> Any:
+    if not from_cli and from_template:
+        msg = f"Argument '{arg}' required"
+        raise RuntimeError(msg)
+
+    return from_cli
+
+
+def arg_type(
+    arg: str, from_cli: Any, from_template: Any
+) -> Any:
+    if from_cli is None:
+        return None
+
+    if from_template is bool:
+        return True
+
+    try:
+        return from_template(from_cli)
+    except ValueError:
+        typ = from_template.__name__
+        msg = f"Value '{from_cli}' for arg '{arg}' cannot be cast to type '{typ}'"
+        raise RuntimeError(msg)
+
+
+def choice(
+    arg: str, from_cli: Any, from_template: Any
+) -> Any:
+    if from_cli is None:
+        return None
+
+    if from_cli not in from_template:
+        msg = f"Value '{from_cli}' for arg '{arg}' not permitted, must be one of {from_template}"
+        raise RuntimeError(msg)
+
+    return from_cli
+
+
+def default(
+    arg: str, from_cli: Any, from_template: Any
+) -> Any:
+    if not from_cli:
+        return from_template
+
+    return from_cli
+
+
+order = [required, arg_type, choice, default]
+order_names = [o.__name__ for o in order]
+
+
+def transform_arguments(
+    template: dict, given: dict
+) -> dict:
+    output = []
+    for arg, params in template.items():
+        value = transform_argument(
+            arg, params, given.get(arg)
+        )
+
+        if value is not None:
+            output.append(value)
+
+    return dict(output)
+
+
+def transform_argument(
+    arg: str, params: dict, given: str
+) -> Tuple[str, Any]:
+    if not isinstance(params, dict):
+        passes_req = required(arg, given, params)
+        value = arg_type(arg, passes_req, params)
+        return arg, value
+
+    temp = given
+    for param_name, param_value in params.items():
+        temp = pick_check(param_name)(
+            arg, temp, param_value
+        )
+
+    if temp is None:
+        return None
+
+    return arg, temp
+
+
+def pick_check(template_param: str) -> Callable:
+    if template_param not in order_names:
+        msg = f"Template parameter '{template_param}' not permitted"
+        raise RuntimeError(msg)
+
+    for o in order:
+        if o.__name__ == template_param:
+            return o

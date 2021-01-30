@@ -29,9 +29,10 @@ RuntimeError: Argument '--bar' expected
 ```
 
 There are several other descriptors you can use:
+- choice
 - default
 - required
-- type
+- arg_type
 
 ```python
 from yacli import parse_args
@@ -39,16 +40,17 @@ from yacli import parse_args
 template = {
     "--foo": {
         "required": True,
-        "type": int
+        "arg_type": int
     },
     "--bar": {
         "required": False,
-        "type": float
+        "arg_type": float,
+        "choice": [2.72, 1.62]
     },
     "--very-verbose": {
         "required": False,
         "default": False,
-        "type": bool
+        "arg_type": bool
     }
 }
 
