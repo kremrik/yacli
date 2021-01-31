@@ -22,24 +22,34 @@ arg_identifier = Combine(dash + Optional(dash))
 arg_name = Word(alphanums + d)
 kwarg = Combine(arg_identifier + arg_name)
 
-value_bgn = "".join([p for p in list(printables) if p != d])
-value = Combine(Char(value_bgn) + ZeroOrMore(Word(printables)))
+value_bgn = "".join(
+    [p for p in list(printables) if p != d]
+)
+value = Combine(
+    Char(value_bgn) + ZeroOrMore(Word(printables))
+)
 
 kwarg_and_value = kwarg + value
 bool_arg = kwarg
 varargs_and_values = kwarg + value[2, ...]
 
-arg = kwarg_and_value("kwarg") ^ bool_arg("flag") ^ varargs_and_values("varargs")
+arg = (
+    kwarg_and_value("kwarg")
+    ^ bool_arg("flag")
+    ^ varargs_and_values("varargs")
+)
 cli = ZeroOrMore(Group(arg))
 
 
 argument = namedtuple(
     typename="argument",
-    field_names=["name", "value", "kind"]
+    field_names=["name", "value", "kind"],
 )
 
 
-def parse_cli_string(arg_string: str) -> List[Opt[Tuple[str]]]:
+def parse_cli_string(
+    arg_string: str,
+) -> List[Opt[Tuple[str]]]:
     if not arg_string:
         return []
 
@@ -49,7 +59,7 @@ def parse_cli_string(arg_string: str) -> List[Opt[Tuple[str]]]:
     for token in tokenized:
         token = token.asDict()
         kind = list(token.keys())[0]
-        
+
         if isinstance(token[kind], list):
             value = token[kind][1:]
             value = value[0] if len(value) == 1 else value

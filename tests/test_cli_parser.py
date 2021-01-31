@@ -19,7 +19,7 @@ class test_parse_cli_string(unittest.TestCase):
         arg_string = "-v --w"
         gold = [
             ("-v", None, "flag"),
-            ("--w", None, "flag")
+            ("--w", None, "flag"),
         ]
         output = parse_cli_string(arg_string)
         self.assertEqual(gold, output)
@@ -34,17 +34,19 @@ class test_parse_cli_string(unittest.TestCase):
         arg_string = "--first-name joe --last-name schmo"
         gold = [
             ("--first-name", "joe", "kwarg"),
-            ("--last-name", "schmo", "kwarg")
+            ("--last-name", "schmo", "kwarg"),
         ]
         output = parse_cli_string(arg_string)
         self.assertEqual(gold, output)
 
     def test_two_kwargs_sandwiching_bool(self):
-        arg_string = "--first-name joe -v --last-name schmo"
+        arg_string = (
+            "--first-name joe -v --last-name schmo"
+        )
         gold = [
             ("--first-name", "joe", "kwarg"),
             ("-v", None, "flag"),
-            ("--last-name", "schmo", "kwarg")
+            ("--last-name", "schmo", "kwarg"),
         ]
         output = parse_cli_string(arg_string)
         self.assertEqual(gold, output)
@@ -54,7 +56,7 @@ class test_parse_cli_string(unittest.TestCase):
         gold = [
             ("-x", None, "flag"),
             ("--name", "joe", "kwarg"),
-            ("-v", None, "flag")
+            ("-v", None, "flag"),
         ]
         output = parse_cli_string(arg_string)
         self.assertEqual(gold, output)
