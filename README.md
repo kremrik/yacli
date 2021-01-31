@@ -11,7 +11,7 @@ half because I just wanted something simpler, more data-driven, and a little mor
 Many of said CLI frameworks for Python are either either entirely language-specific or very opinionated.
 For example, `click` is not a language-agnostic implementation of a CLI tool, and it's also heavily geared towards coupling your business logic (the options/arguments) with the application logic (the functions you're decorating).
 <br><br>
-`yacli` tries to be unsurprising and intuitive, getting our of your way as soon as possible, and relying entirely on native Python objects. 
+`yacli` tries to be unsurprising and intuitive, getting our of your way as soon as possible, and letting _you_ decide how you wish to use the results.
 
 ### Basics
 `yacli` works by exposing one function, `parse_args`, that takes an input template (of type `dict`),
@@ -46,7 +46,7 @@ parse_args(template, ["--foo", "1", "--bar", "-v"])
 
 parse_args(template, ["--foo", "1"])
 ...
-RuntimeError: Argument '--bar' expected
+ValidationException: Argument '--bar' expected
 ```
 
 There are several other descriptors you can use:

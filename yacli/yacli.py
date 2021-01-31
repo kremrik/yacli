@@ -1,4 +1,5 @@
 from yacli.cli_parser import parse_cli_string
+from yacli.exceptions import ValidationException
 
 from collections import namedtuple
 from typing import Any, Callable, List, Optional, Tuple
@@ -74,7 +75,7 @@ def required(
 ) -> Any:
     if not from_cli and from_template:
         msg = f"Argument '{arg}' required"
-        raise RuntimeError(msg)
+        raise ValidationException(msg)
 
     return from_cli
 
@@ -98,7 +99,7 @@ def arg_type(
     except ValueError:
         typ = from_template.__name__
         msg = f"Value '{from_cli}' for arg '{arg}' cannot be cast to type '{typ}'"
-        raise RuntimeError(msg)
+        raise ValidationException(msg)
 
 
 def choice(
@@ -109,7 +110,7 @@ def choice(
 
     if from_cli not in from_template:
         msg = f"Value '{from_cli}' for arg '{arg}' not permitted, must be one of {from_template}"
-        raise RuntimeError(msg)
+        raise ValidationException(msg)
 
     return from_cli
 
@@ -165,7 +166,7 @@ def transform_argument(
 def pick_check(template_param: str) -> Callable:
     if template_param not in order_names:
         msg = f"Template parameter '{template_param}' not permitted"
-        raise RuntimeError(msg)
+        raise ValidationException(msg)
 
     for o in order:
         if o.__name__ == template_param:

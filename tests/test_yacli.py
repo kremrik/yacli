@@ -1,4 +1,5 @@
 from yacli.yacli import (
+    ValidationException,
     parse_cli,
     required,
     arg_type,
@@ -58,7 +59,7 @@ class test_transform_arguments(unittest.TestCase):
             },
         }
         given = {"--foo": "1", "--bar": "hello"}
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ValidationException):
             transform_arguments(template, given)
 
 
@@ -99,7 +100,7 @@ class test_transform_argument(unittest.TestCase):
             "choice": [1.2, 2.3],
         }
         given = None
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ValidationException):
             transform_argument(arg, params, given)
 
     def test_assortment_with_default(self):
@@ -134,7 +135,7 @@ class test_required(unittest.TestCase):
         arg = "--foo"
         from_cli = None
         from_template = True
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ValidationException):
             required(arg, from_cli, from_template)
 
     def test_required_is_false_value_not_supplied(self):
@@ -167,7 +168,7 @@ class test_arg_type(unittest.TestCase):
         arg = "--foo"
         from_cli = "hi"
         from_template = int
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ValidationException):
             arg_type(arg, from_cli, from_template)
 
 
@@ -192,7 +193,7 @@ class test_choice(unittest.TestCase):
         arg = "--foo"
         from_cli = 3
         from_template = [1, 2]
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ValidationException):
             choice(arg, from_cli, from_template)
 
 
