@@ -1,71 +1,55 @@
 from yacli.cli_parser import parse_cli_string
 
+from collections import namedtuple
 from typing import Any, Callable, List, Optional, Tuple
 
 
 __all__ = ["parse_args"]
 
 
+cli_arguments = namedtuple(
+    typename="cli_arguments",
+    field_names=["args", "unexpected"],
+)
+
+
 def parse_args(
     template: dict,
     inpt: Optional[List[str]] = None,
-    ignore_extra: bool = False,
-) -> dict:
+) -> Tuple[dict, dict]:
     if not inpt:
         from sys import argv
 
         inpt = argv[1:]
 
     inpt = " ".join(inpt)
+    given = parse_cli(inpt)
 
-    return _get_cli(
-        cli_string=inpt,
-        template=template,
-        ignore_extra=ignore_extra,
+    args = transform_arguments(
+        template=template, given=given
     )
+    extras = get_extra_args(template=template, given=given)
+
+    return cli_arguments(args=args, unexpected=extras)
 
 
-def _get_cli(
-    cli_string: str, template: dict, ignore_extra: bool
-) -> dict:
-    tokenized = _parse_cli(cli_string)
-    normalized = _normalize_cli_results(tokenized)
+def get_extra_args(template: dict, given: dict) -> dict:
+    template_args = set(template)
+    given_args = set(given)
+    extra_args = given_args - template_args
 
-    given_args = set(normalized)
-    requested_args = set(template)
-    extra_args = given_args - requested_args
+    if not extra_args:
+        return {}
 
-    if extra_args and ignore_extra is False:
-        raise RuntimeError(
-            f"Unexpected argument(s): {extra_args}"
-        )
-
-    output = {}
-    for arg, prefs in template.items():
-        required = prefs["required"]
-
-        if arg not in normalized and required is True:
-            raise RuntimeError(
-                f"Argument '{arg}' expected"
-            )
-
-        if arg not in normalized and required is False:
-            continue
-
-        typ = prefs["arg_type"]
-        value = typ(normalized[arg]["value"])
-
-        output[arg] = value
-
-    return output
+    return {key: given[key] for key in extra_args}
 
 
-def _parse_cli(cli_string: str) -> dict:
+def parse_cli(cli_string: str) -> dict:
     tokenized_input = parse_cli_string(cli_string)
     return {arg.name: arg.value for arg in tokenized_input}
 
 
-def _normalize_cli_results(cli_results: dict) -> dict:
+def normalize_cli_results(cli_results: dict) -> dict:
     output = {}
 
     for k, v in cli_results.items():
