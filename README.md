@@ -57,3 +57,16 @@ template = {
 parse_args(template, ["--foo", "1"])
 {"--foo": 1, "--very-verbose": False}
 ```
+
+Additionally, you may use the `Ellipses` (`...`) to signify a "nargs"-like input:
+
+```python
+from yacli import parse_args
+
+template = {
+    "--foo": ...
+}
+
+parse_args(template, ["--foo", "1", "2"])
+{"--foo": ["1", "2"]}
+```

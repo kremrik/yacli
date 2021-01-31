@@ -15,6 +15,7 @@ def parse_args(
         from sys import argv
 
         inpt = argv[1:]
+
     inpt = " ".join(inpt)
 
     return _get_cli(
@@ -51,7 +52,7 @@ def _get_cli(
         if arg not in normalized and required is False:
             continue
 
-        typ = prefs["type"]
+        typ = prefs["arg_type"]
         value = typ(normalized[arg]["value"])
 
         output[arg] = value
@@ -61,19 +62,7 @@ def _get_cli(
 
 def _parse_cli(cli_string: str) -> dict:
     tokenized_input = parse_cli_string(cli_string)
-    fmt_tokens = [tuple(t) for t in tokenized_input]
-
-    output = {}
-    for arg in fmt_tokens:
-        name = arg[0]
-
-        if len(arg) == 1:
-            output[name] = True
-        else:
-            value = arg[1]
-            output[name] = value
-
-    return output
+    return {arg.name: arg.value for arg in tokenized_input}
 
 
 def _normalize_cli_results(cli_results: dict) -> dict:
@@ -114,6 +103,11 @@ def arg_type(
 
     if from_template is bool:
         return True
+
+    if from_template is Ellipsis:
+        if not isinstance(from_cli, list):
+            return [from_cli]
+        return from_cli
 
     try:
         return from_template(from_cli)
