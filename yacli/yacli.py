@@ -94,9 +94,8 @@ def _normalize_cli_results(cli_results: dict) -> dict:
     return output
 
 
+# input validation
 # ---------------------------------------------------------
-
-
 def required(
     arg: str, from_cli: Any, from_template: Any
 ) -> Any:
