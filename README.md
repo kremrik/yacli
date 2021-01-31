@@ -52,6 +52,7 @@ ValidationException: Argument '--bar' expected
 There are several other descriptors you can use:
 - choice
 - default
+- help
 - required
 - arg_type
 

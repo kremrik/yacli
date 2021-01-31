@@ -111,6 +111,18 @@ class test_transform_argument(unittest.TestCase):
         output = transform_argument(arg, params, given)
         self.assertEqual(gold, output)
 
+    def test_assortment_with_default_and_help(self):
+        arg = "--foo"
+        params = {
+            "required": False,
+            "default": 0,
+            "help": "does foo",
+        }
+        given = None
+        gold = ("--foo", 0)
+        output = transform_argument(arg, params, given)
+        self.assertEqual(gold, output)
+
 
 # testing arg transformer functions
 # ---------------------------------------------------------

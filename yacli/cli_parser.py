@@ -10,7 +10,7 @@ from pyparsing import (
 )
 
 from collections import namedtuple
-from typing import List, Tuple, Optional as Opt
+from typing import List, Optional as Opt
 
 
 __all__ = ["parse_cli_string"]
@@ -49,7 +49,7 @@ argument = namedtuple(
 
 def parse_cli_string(
     arg_string: str,
-) -> List[Opt[Tuple[str]]]:
+) -> List[Opt[argument]]:
     if not arg_string:
         return []
 
