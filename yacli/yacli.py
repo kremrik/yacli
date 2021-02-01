@@ -1,15 +1,12 @@
 from yacli.cli_parser import parse_cli_string
 from yacli.exceptions import ValidationException
-from yacli.help import format_help
+from yacli.help import handle_help
 
 from collections import namedtuple
 from typing import Any, Callable, List, Optional, Tuple
 
 
 __all__ = ["parse_args"]
-
-
-HELP = ("-h", "--help")
 
 
 cli_arguments = namedtuple(
@@ -21,8 +18,8 @@ cli_arguments = namedtuple(
 def parse_args(
     template: dict,
     app_name: Optional[str] = None,
+    help: Optional[bool] = True,
     inpt: Optional[List[str]] = None,
-    handle_help: Optional[bool] = True,
 ) -> Tuple[dict, dict]:
     if not inpt:
         from sys import argv
@@ -32,20 +29,12 @@ def parse_args(
     inpt = " ".join(inpt)
     given = parse_cli(inpt)
 
-    if handle_help:
-        if not app_name:
-            app_name = "cli help"
-
-        if not given:
-            help = format_help(app_name, template)
-            print(help)
-            exit(0)
-
-        for h in HELP:
-            if h in given:
-                help = format_help(app_name, template)
-                print(help)
-                exit(0)
+    if help:
+        handle_help(
+            template=template,
+            given=given,
+            app_name=app_name,
+        )
 
     args = transform_arguments(
         template=template, given=given

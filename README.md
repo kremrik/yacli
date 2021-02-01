@@ -88,3 +88,20 @@ template = {
 parse_args(template, ["--foo", "1", "2"])
 ({"--foo": ["1", "2"]}, {})
 ```
+
+Finally, help functionality is available by default (but can be turned off if desired):
+
+```python
+template = {
+    "--foo": {
+        "help": "does foo-y things"
+        "arg_type": int
+    },
+    "--bar": float
+}
+
+parse_args(template, app_name="cool-app", inpt=["-h"])  # "--help" will work, too
+cool-app
+  --foo    does foo-y things
+  --bar
+```

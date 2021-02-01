@@ -1,4 +1,4 @@
-from yacli.help import format_help
+from yacli.help import format_help_output
 import unittest
 
 
@@ -7,7 +7,7 @@ class test_format_help(unittest.TestCase):
         app_name = "test"
         template = {"--foo": int}
         gold = "test\n  --foo\n"
-        output = format_help(
+        output = format_help_output(
             app_name=app_name, template=template
         )
         self.assertEqual(gold, output)
@@ -16,7 +16,7 @@ class test_format_help(unittest.TestCase):
         app_name = "test"
         template = {"--foo": {"help": "does foo stuff"}}
         gold = "test\n  --foo    does foo stuff\n"
-        output = format_help(
+        output = format_help_output(
             app_name=app_name, template=template
         )
         self.assertEqual(gold, output)
@@ -28,7 +28,7 @@ class test_format_help(unittest.TestCase):
             "--bar": int,
         }
         gold = "test\n  --foo    does foo stuff\n  --bar\n"
-        output = format_help(
+        output = format_help_output(
             app_name=app_name, template=template
         )
         self.assertEqual(gold, output)

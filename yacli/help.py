@@ -1,17 +1,41 @@
-from typing import List
+from typing import List, Optional
 
 
-__all__ = ["format_help"]
+__all__ = ["handle_help"]
 
 
-def format_help(app_name: str, template: dict) -> str:
+HELP_ARGS = ("-h", "--help")
+
+
+def handle_help(
+    template: dict,
+    given: dict,
+    app_name: Optional[str] = None,
+) -> None:
+    if not app_name:
+        app_name = "CLI Help"
+
+    output = format_help_output(
+        template=template, app_name=app_name
+    )
+
+    if not given:
+        print(output)
+        exit(0)
+
+    for h in HELP_ARGS:
+        if h in given:
+            print(output)
+            exit(0)
+
+
+def format_help_output(
+    template: dict, app_name: str
+) -> str:
+    # main testable function for this module
     args = get_arg_help(template)
     output = f"{app_name}\n{args}\n"
     return output
-
-
-def underline(text: str) -> str:
-    return "-" * len(text)
 
 
 def get_arg_help(template: dict) -> List[str]:
