@@ -6,7 +6,7 @@ class test_format_help(unittest.TestCase):
     def test_no_help(self):
         app_name = "test"
         template = {"--foo": int}
-        gold = "test\n  --foo\n"
+        gold = "test\n  --foo [int]\n"
         output = format_help_output(
             app_name=app_name, template=template
         )
@@ -27,7 +27,7 @@ class test_format_help(unittest.TestCase):
             "--foo": {"help": "does foo stuff"},
             "--bar": int,
         }
-        gold = "test\n  --foo    does foo stuff\n  --bar\n"
+        gold = "test\n  --foo    does foo stuff\n  --bar [int]\n"
         output = format_help_output(
             app_name=app_name, template=template
         )

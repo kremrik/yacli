@@ -50,7 +50,6 @@ ValidationException: Argument '--bar' expected
 ```
 
 There are several other descriptors you can use:
-- choice
 - default
 - help
 - required
@@ -64,8 +63,7 @@ template = {
     },
     "--bar": {
         "required": False,
-        "arg_type": float,
-        "choice": [2.72, 1.62]
+        "arg_type": [2.72, 1.62],
     },
     "--very-verbose": {
         "required": False,

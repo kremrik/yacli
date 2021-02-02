@@ -45,28 +45,48 @@ def get_arg_help(template: dict) -> List[str]:
     args = []
 
     for arg, params in template.items():
-        if not isinstance(params, dict):
-            help = ""
-        else:
-            help = params.get("help")
-            if not help:
-                help = ""
+        help = get_help(params)
+        typ = get_type(params)
 
         arg_len = len(arg)
         if arg_len > max_arg_len:
             max_arg_len = arg_len
 
-        a = (arg, help, arg_len)
+        a = (arg, help, typ, arg_len)
         args.append(a)
 
     total_arg_space = max_arg_len + sep
     formatted_args = []
 
     for arg in args:
-        name, help, arg_len = arg
+        name, help, typ, arg_len = arg
         space = (total_arg_space - arg_len) * " "
-        a = f"{indent}{name}{space}{help}".rstrip()
+        a = f"{indent}{name}{typ}{space}{help}".rstrip()
         formatted_args.append(a)
 
     output = "\n".join(formatted_args)
     return output
+
+
+# TODO: breaks abstraction
+def get_help(params: dict) -> str:
+    if not isinstance(params, dict):
+        help = ""
+    else:
+        help = params.get("help")
+        if not help:
+            help = ""
+    return help
+
+
+# TODO: breaks abstraction
+def get_type(params) -> str:
+    if isinstance(params, dict):
+        typ = params.get("arg_type", "")
+    elif params == Ellipsis:
+        typ = " [nargs]"
+    elif isinstance(params, list):
+        typ = f" {str(params)}"
+    else:
+        typ = f" [{str(params.__name__)}]"
+    return typ

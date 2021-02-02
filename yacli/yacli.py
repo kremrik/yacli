@@ -104,25 +104,20 @@ def arg_type(
             return [from_cli]
         return from_cli
 
+    if isinstance(from_template, list):
+        for choice in from_template:
+            if from_cli == str(choice):
+                template_type = type(choice)
+                return template_type(from_cli)
+        msg = f"Value '{from_cli}' not a valid choice, expected one of '{from_template}'"
+        raise ValidationException(msg)
+
     try:
         return from_template(from_cli)
     except ValueError:
         typ = from_template.__name__
         msg = f"Value '{from_cli}' for arg '{arg}' cannot be cast to type '{typ}'"
         raise ValidationException(msg)
-
-
-def choice(
-    arg: str, from_cli: Any, from_template: Any
-) -> Any:
-    if from_cli is None:
-        return None
-
-    if from_cli not in from_template:
-        msg = f"Value '{from_cli}' for arg '{arg}' not permitted, must be one of {from_template}"
-        raise ValidationException(msg)
-
-    return from_cli
 
 
 def default(
@@ -140,7 +135,7 @@ def help(
     return from_cli
 
 
-order = [required, arg_type, choice, default, help]
+order = [required, arg_type, default, help]
 order_names = [o.__name__ for o in order]
 
 
