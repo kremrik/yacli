@@ -33,6 +33,20 @@ class test_format_help(unittest.TestCase):
         )
         self.assertEqual(gold, output)
 
+    def test_with_arg_type(self):
+        app_name = "test"
+        template = {
+            "--foo": {
+                "help": "does foo stuff",
+                "arg_type": int
+            },
+        }
+        gold = "test\n  --foo [int]    does foo stuff\n"
+        output = format_help_output(
+            app_name=app_name, template=template
+        )
+        self.assertEqual(gold, output)
+
 
 if __name__ == "__main__":
     unittest.main()

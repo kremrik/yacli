@@ -83,6 +83,8 @@ def get_help(params: dict) -> str:
 def get_type(params) -> str:
     if isinstance(params, dict):
         typ = params.get("arg_type", "")
+        if typ:
+            typ = f" [{str(typ.__name__)}]"
     elif params == Ellipsis:
         typ = " [nargs]"
     elif isinstance(params, list):
