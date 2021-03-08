@@ -5,13 +5,7 @@
 _yet another command line interface_
 
 ### Why
-Half because I wanted to try my hand at some simple "Parsing Expression Grammar", 
-half because I just wanted something simpler, more data-driven, and a little more functional than the leading CLI contenders.
-<br><br>
-Many of said CLI frameworks for Python are either either entirely language-specific or very opinionated.
-For example, `click` is not a language-agnostic implementation of a CLI tool, and it's also heavily geared towards coupling your business logic (the options/arguments) with the application logic (the functions you're decorating).
-<br><br>
-`yacli` tries to be unsurprising and intuitive, getting our of your way as soon as possible, and letting _you_ decide how you wish to use the results.
+I wanted to try my hand at some simple "Parsing Expression Grammar", and parsing command line arguments seemed like a fun way to start.
 
 ### Basics
 `yacli` works by exposing one function, `parse_args`, that takes an input template (of type `dict`),
